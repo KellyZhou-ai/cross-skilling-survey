@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cross Skilling Copilot - Impact Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #742774;
+    --primary-light: #a855a8;
+    --primary-dark: #5c1f5c;
+    --primary-bg: #f5f0f7;
+    --accent: #e8d5f5;
+    --card-bg: #ffffff;
+    --body-bg: #f7f5f9;
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-muted: #a1a1a6;
+    --border: #e5e5ea;
+    --border-light: #f0f0f2;
+    --success: #34c759;
+    --danger: #ff3b30;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 14px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--body-bg);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Animated Banner ── */
+  .banner {
+    background: linear-gradient(135deg, #4a1a6b 0%, #742774 30%, #a855a8 60%, #c084cf 100%);
+    height: 220px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .banner::before {
+    content: '';
+    position: absolute;
+    top: -60%; left: -20%;
+    width: 80%; height: 250%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: float 8s ease-in-out infinite;
+  }
+  .banner::after {
+    content: '';
+    position: absolute;
+    bottom: -40%; right: -10%;
+    width: 60%; height: 200%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.07) 0%, transparent 70%);
+    animation: float 10s ease-in-out infinite reverse;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(2deg); }
+  }
+
+  /* ── Banner decorative dots ── */
+  .banner-decor {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .banner-decor span {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .banner-decor span:nth-child(1) { width: 300px; height: 300px; top: -100px; right: -50px; }
+  .banner-decor span:nth-child(2) { width: 200px; height: 200px; bottom: -80px; left: 10%; }
+  .banner-decor span:nth-child(3) { width: 120px; height: 120px; top: 20px; left: 40%; background: rgba(255,255,255,0.04); }
+
+  /* ── Container ── */
+  .form-container {
+    max-width: 680px;
+    margin: -90px auto 60px;
+    position: relative;
+    z-index: 1;
+    padding: 0 20px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+    padding: 32px 36px;
+    border: 1px solid var(--border-light);
+    position: relative;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardIn 0.5s ease forwards;
+    transition: box-shadow 0.3s, transform 0.2s;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card:nth-child(2) { animation-delay: 0.05s; }
+  .card:nth-child(3) { animation-delay: 0.1s; }
+  .card:nth-child(4) { animation-delay: 0.15s; }
+  .card:nth-child(5) { animation-delay: 0.2s; }
+  .card:nth-child(6) { animation-delay: 0.25s; }
+  .card:nth-child(7) { animation-delay: 0.3s; }
+  .card:nth-child(8) { animation-delay: 0.35s; }
+  .card:nth-child(9) { animation-delay: 0.4s; }
+  .card:nth-child(10) { animation-delay: 0.45s; }
+
+  /* ── Header Card ── */
+  .card.header-card {
+    border: none;
+    border-radius: var(--radius);
+    overflow: hidden;
+    padding: 0;
+  }
+  .header-accent {
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light), #d6a4e8);
+  }
+  .header-content {
+    padding: 32px 36px 28px;
+  }
+  .header-content .survey-icon {
+    width: 48px; height: 48px;
+    background: var(--primary-bg);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .header-content .survey-icon svg {
+    width: 24px; height: 24px;
+    stroke: var(--primary);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .card h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+  .card .subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .required-note {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ── Question ── */
+  .question-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .question-title .req {
+    color: var(--danger);
+    margin-left: 2px;
+    font-weight: 700;
+  }
+  .question-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  /* ── Custom Radio ── */
+  .option-group { display: flex; flex-direction: column; gap: 6px; }
+  .option-group label {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: var(--text);
+    border: 1.5px solid transparent;
+    background: var(--body-bg);
+  }
+  .option-group label:hover {
+    background: var(--primary-bg);
+    border-color: var(--accent);
+  }
+  .option-group input[type="radio"],
+  .option-group input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px; height: 20px;
+    border: 2px solid #c7c7cc;
+    border-radius: 50%;
+    margin-right: 14px;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .option-group input[type="checkbox"] {
+    border-radius: 6px;
+  }
+  .option-group input[type="radio"]:checked,
+  .option-group input[type="checkbox"]:checked {
+    border-color: var(--primary);
+    background: var(--primary);
+  }
+  .option-group input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 8px; height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .option-group input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 6px;
+    width: 5px; height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .option-group label:has(input:checked) {
+    background: var(--primary-bg);
+    border-color: var(--primary);
+  }
+
+  /* ── Rating scale ── */
+  .rating-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .rating-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    padding: 0 8px;
+    font-weight: 500;
+  }
+  .rating-options {
+    display: flex;
+    gap: 8px;
+  }
+  .rating-options label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 4px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--body-bg);
+    border: 1.5px solid transparent;
+  }
+  .rating-options label:hover {
+    background: var(--primary-bg);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .rating-options input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px; height: 22px;
+    border: 2px solid #c7c7cc;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .rating-options input[type="radio"]:checked {
+    border-color: var(--primary);
+    background: var(--primary);
+    box-shadow: 0 0 0 3px rgba(116,39,116,0.15);
+  }
+  .rating-options input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 8px; height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .rating-options label:has(input:checked) {
+    background: var(--primary-bg);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* ── Likert grid ── */
+  .likert-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+    margin-top: 10px;
+    font-size: 13px;
+  }
+  .likert-table th {
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 10px 4px;
+    text-align: center;
+    font-size: 11px;
+    min-width: 56px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .likert-table th:first-child { text-align: left; min-width: 180px; }
+  .likert-table td {
+    padding: 14px 4px;
+    text-align: center;
+    background: var(--body-bg);
+  }
+  .likert-table tr td:first-child {
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    text-align: left;
+    color: var(--text);
+    font-size: 13px;
+    padding-left: 14px;
+    padding-right: 10px;
+    line-height: 1.4;
+  }
+  .likert-table tr td:last-child {
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .likert-table input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; height: 18px;
+    border: 2px solid #c7c7cc;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .likert-table input[type="radio"]:checked {
+    border-color: var(--primary);
+    background: var(--primary);
+  }
+  .likert-table input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 6px; height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── Text inputs ── */
+  .text-input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    padding: 10px 4px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    transition: border-color 0.3s;
+    background: transparent;
+    outline: none;
+  }
+  .text-input:focus {
+    border-bottom-color: var(--primary);
+  }
+  .text-input::placeholder {
+    color: var(--text-muted);
+  }
+  .textarea-input {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background: var(--body-bg);
+    outline: none;
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+  .textarea-input:focus {
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(116,39,116,0.08);
+  }
+  .textarea-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  /* ── Section header ── */
+  .section-label {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::before {
+    content: '';
+    width: 4px;
+    height: 22px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--primary), var(--primary-light));
+    flex-shrink: 0;
+  }
+
+  /* ── Agent Cards ── */
+  .agent-card {
+    border-left: 4px solid var(--primary);
+    background: linear-gradient(135deg, #fff 0%, #fdf8ff 100%);
+  }
+  .agent-card.agent-rpa { border-left-color: #742774; }
+  .agent-card.agent-ca  { border-left-color: #a855a8; }
+  .agent-card.agent-qa  { border-left-color: #c084cf; }
+
+  .agent-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .agent-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+  }
+  .agent-rpa .agent-badge { background: #742774; }
+  .agent-ca .agent-badge  { background: #a855a8; }
+  .agent-qa .agent-badge  { background: #c084cf; }
+
+  /* ── Branching visibility ── */
+  .branch { display: none; }
+  .branch.active { display: block; }
+
+  /* ── Progress bar ── */
+  .progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+    position: relative;
+  }
+  .progress-bar .fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .progress-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    min-width: 32px;
+    text-align: right;
+  }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #fff;
+    border: none;
+    padding: 12px 36px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(116,39,116,0.3);
+    letter-spacing: 0.2px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(116,39,116,0.4);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-primary:disabled {
+    background: var(--border);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-back {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 2px solid var(--border);
+    padding: 12px 28px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover {
+    border-color: var(--text-secondary);
+    background: var(--body-bg);
+  }
+
+  /* ── Submitting spinner ── */
+  .btn-primary .spinner {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 8px;
+  }
+  .btn-primary.loading .spinner { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Thank you page ── */
+  .thank-you {
+    text-align: center;
+    padding: 70px 40px;
+    display: none;
+  }
+  .thank-you.active { display: block; }
+  .thank-you .check-icon {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(116,39,116,0.3);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .thank-you .check-icon svg {
+    width: 36px; height: 36px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .thank-you h2 {
+    font-size: 24px;
+    color: var(--text);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .thank-you p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.2px;
+  }
+  .footer a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  /* ══════════════════════════════════ */
+  /* ══════ COVER PAGE STYLES ══════ */
+  /* ══════════════════════════════════ */
+  .cover {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #2d0a3e 0%, #4a1a6b 25%, #742774 50%, #a855a8 75%, #d6a4e8 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+  }
+  .cover.hidden {
+    display: none;
+  }
+
+  /* Animated background particles */
+  .cover-particles {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+  .cover-particles span {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    animation: particleFloat linear infinite;
+  }
+  .cover-particles span:nth-child(1) { width: 400px; height: 400px; top: -10%; left: -5%; animation-duration: 20s; }
+  .cover-particles span:nth-child(2) { width: 250px; height: 250px; top: 60%; right: -8%; animation-duration: 25s; animation-delay: -5s; }
+  .cover-particles span:nth-child(3) { width: 150px; height: 150px; top: 20%; right: 20%; background: rgba(255,255,255,0.04); animation-duration: 18s; animation-delay: -3s; }
+  .cover-particles span:nth-child(4) { width: 100px; height: 100px; bottom: 15%; left: 15%; background: rgba(255,255,255,0.05); animation-duration: 22s; animation-delay: -8s; }
+  .cover-particles span:nth-child(5) { width: 60px; height: 60px; top: 40%; left: 50%; background: rgba(255,255,255,0.08); animation-duration: 15s; animation-delay: -2s; }
+  @keyframes particleFloat {
+    0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+    25% { transform: translateY(-30px) translateX(15px) scale(1.05); }
+    50% { transform: translateY(-10px) translateX(-20px) scale(0.95); }
+    75% { transform: translateY(-40px) translateX(10px) scale(1.02); }
+  }
+
+  /* Grid pattern overlay */
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .cover-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 640px;
+    animation: coverFadeIn 1s ease;
+  }
+  @keyframes coverFadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Hero illustration - abstract copilot graphic */
+  .cover-hero {
+    width: 160px; height: 160px;
+    margin: 0 auto 36px;
+    position: relative;
+    animation: heroFloat 4s ease-in-out infinite;
+  }
+  @keyframes heroFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .cover-hero .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .cover-hero .ring-1 { width: 160px; height: 160px; top: 0; left: 0; animation: ringPulse 3s ease-in-out infinite; }
+  .cover-hero .ring-2 { width: 120px; height: 120px; top: 20px; left: 20px; animation: ringPulse 3s ease-in-out infinite 0.5s; border-color: rgba(255,255,255,0.2); }
+  .cover-hero .ring-3 { width: 80px; height: 80px; top: 40px; left: 40px; animation: ringPulse 3s ease-in-out infinite 1s; border-color: rgba(255,255,255,0.25); }
+  @keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.08); opacity: 1; }
+  }
+  .cover-hero .center-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px; height: 64px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .cover-hero .center-icon svg {
+    width: 32px; height: 32px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Orbiting dots */
+  .cover-hero .orbit-dot {
+    position: absolute;
+    width: 10px; height: 10px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(255,255,255,0.4);
+  }
+  .orbit-dot-1 { top: 0; left: 50%; margin-left: -5px; animation: orbitSpin 6s linear infinite; transform-origin: 5px 80px; }
+  .orbit-dot-2 { top: 20px; left: 100%; margin-left: -15px; animation: orbitSpin 8s linear infinite reverse; transform-origin: -45px 60px; }
+  .orbit-dot-3 { bottom: 10px; left: 30%; animation: orbitSpin 7s linear infinite; transform-origin: 30px -60px; background: rgba(216,168,245,0.7); }
+  @keyframes orbitSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    padding: 8px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+  }
+  .cover-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #34c759;
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .cover h1 span {
+    display: block;
+    background: linear-gradient(90deg, #e8d5f5, #fff, #e8d5f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cover .cover-subtitle {
+    font-size: 17px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Feature pills */
+  .cover-features {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 44px;
+  }
+  .cover-feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 20px;
+    color: rgba(255,255,255,0.9);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+  .cover-feature:hover {
+    background: rgba(255,255,255,0.14);
+    transform: translateY(-2px);
+  }
+  .cover-feature svg {
+    width: 18px; height: 18px;
+    stroke: rgba(255,255,255,0.7);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* Start button */
+  .btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    color: var(--primary);
+    border: none;
+    padding: 16px 48px;
+    border-radius: 60px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    letter-spacing: 0.3px;
+  }
+  .btn-start:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .btn-start:active {
+    transform: translateY(-1px) scale(1);
+  }
+  .btn-start svg {
+    width: 18px; height: 18px;
+    stroke: var(--primary);
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.3s;
+  }
+  .btn-start:hover svg {
+    transform: translateX(4px);
+  }
+
+  .cover-footer {
+    margin-top: 36px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .cover-footer svg {
+    width: 14px; height: 14px;
+    stroke: rgba(255,255,255,0.4);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Hide main content until started */
+  .main-survey { display: none; }
+  .main-survey.visible { display: block; }
+
+  /* ── Responsive ── */
+  @media (max-width: 520px) {
+    .cover h1 { font-size: 28px; }
+    .cover .cover-subtitle { font-size: 15px; }
+    .cover-features { gap: 8px; }
+    .cover-feature { padding: 10px 14px; font-size: 12px; }
+    .btn-start { padding: 14px 36px; font-size: 15px; }
+    .cover-hero { width: 120px; height: 120px; }
+    .cover-hero .ring-1 { width: 120px; height: 120px; }
+    .cover-hero .ring-2 { width: 90px; height: 90px; top: 15px; left: 15px; }
+    .cover-hero .ring-3 { width: 60px; height: 60px; top: 30px; left: 30px; }
+    .card { padding: 24px 20px; }
+    .header-content { padding: 24px 20px 20px; }
+    .card h1 { font-size: 20px; }
+    .likert-table th, .likert-table td { padding: 10px 2px; font-size: 11px; }
+    .likert-table th:first-child { min-width: 120px; }
+    .rating-options label { font-size: 11px; padding: 10px 2px; }
+    .rating-options { gap: 4px; }
+    .option-group label { padding: 10px 12px; font-size: 13px; }
+    .btn-primary { padding: 12px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ -->
+<!-- ══════════ COVER PAGE ══════════════ -->
+<!-- ══════════════════════════════════════ -->
+<div class="cover" id="coverPage">
+  <div class="cover-particles">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="cover-content">
+    <!-- Hero illustration -->
+    <div class="cover-hero">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+      <div class="orbit-dot orbit-dot-1"></div>
+      <div class="orbit-dot orbit-dot-2"></div>
+      <div class="orbit-dot orbit-dot-3"></div>
+      <div class="center-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cover-badge"><span class="dot"></span> Survey Active</div>
+
+    <h1>Cross Skilling Copilot<span>Impact Survey</span></h1>
+
+    <p class="cover-subtitle">
+      Help us understand how Cross Skilling Copilot is transforming the mentoring and learning experience. Your feedback directly shapes the future of this tool.
+    </p>
+
+    <div class="cover-features">
+      <div class="cover-feature">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        1–3 min
+      </div>
+      <div class="cover-feature">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Confidential
+      </div>
+      <div class="cover-feature">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Mentors & Mentees
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startSurvey()">
+      Start Survey
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+
+    <div class="cover-footer">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Your responses are confidential
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- ══════════ MAIN SURVEY ════════════ -->
+<!-- ══════════════════════════════════════ -->
+<div class="main-survey" id="mainSurvey">
+
+<div class="banner">
+  <div class="banner-decor">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<div class="form-container" id="formContainer">
+
+  <!-- ══════════ HEADER ══════════ -->
+  <div class="card header-card">
+    <div class="header-accent"></div>
+    <div class="header-content">
+      <div class="survey-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <h1>Cross Skilling Copilot — Impact Survey</h1>
+      <p class="subtitle">
+        Thank you for taking the time to share your experience with Cross Skilling Copilot.
+        Your feedback is essential to help us understand the tool's impact and identify areas for improvement.
+        This survey should take approximately <strong>1–3 minutes</strong> to complete.
+      </p>
+      <p class="required-note"><span>*</span> indicates a required question</p>
+    </div>
+  </div>
+
+  <div class="progress-wrapper">
+    <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+    <span class="progress-text" id="progressText">0%</span>
+  </div>
+
+  <!-- ══════════ PAGE 1: ROLE SELECTION ══════════ -->
+  <div id="page1" class="page active">
+    <div class="card">
+      <p class="question-title">1. Your Name & Team <span class="req">*</span></p>
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:200px;">
+          <label style="font-size:12px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:6px;">Name</label>
+          <input type="text" class="text-input" id="respondentName" placeholder="Enter your name">
+        </div>
+        <div style="flex:1; min-width:200px;">
+          <label style="font-size:12px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:6px;">Team</label>
+          <input type="text" class="text-input" id="respondentTeam" placeholder="Enter your team name">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">2. What is your role in the Cross Skilling program? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="role" value="mentor" onchange="handleRoleChange()"> Mentor</label>
+        <label><input type="radio" name="role" value="mentee" onchange="handleRoleChange()"> Mentee (New product learner)</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">3. Which product / technology is involved in your cross-skilling engagement? <span class="req">*</span></p>
+      <input type="text" class="text-input" id="productName" placeholder="Enter the product or technology name">
+    </div>
+
+    <div class="card">
+      <p class="question-title">4. How long have you been using Cross Skilling Copilot? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="duration" value="<1week"> Less than 1 week</label>
+        <label><input type="radio" name="duration" value="1-2weeks"> 1 – 2 weeks</label>
+        <label><input type="radio" name="duration" value="2-4weeks"> 2 – 4 weeks</label>
+        <label><input type="radio" name="duration" value="1-2months"> 1 – 2 months</label>
+        <label><input type="radio" name="duration" value=">2months"> More than 2 months</label>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="nextBtn1" disabled onclick="goToPage2()">Next &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- ══════════ PAGE 2 – MENTOR BRANCH ══════════ -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div id="pageMentor" class="page branch">
+
+    <div class="card">
+      <p class="section-label">Section A — Workload & Efficiency</p>
+      <p class="subtitle">How has Cross Skilling Copilot affected your mentoring workload?</p>
+    </div>
+
+    <div class="card">
+      <p class="question-title">5. Before using Cross Skilling Copilot, approximately how many hours per week did you spend mentoring / guiding mentees? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="m_hours_before" value="<2"> Less than 2 hours</label>
+        <label><input type="radio" name="m_hours_before" value="2-5"> 2 – 5 hours</label>
+        <label><input type="radio" name="m_hours_before" value="5-10"> 5 – 10 hours</label>
+        <label><input type="radio" name="m_hours_before" value=">10"> More than 10 hours</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">6. After using Cross Skilling Copilot, approximately how many hours per week do you now spend mentoring / guiding mentees? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="m_hours_after" value="<2"> Less than 2 hours</label>
+        <label><input type="radio" name="m_hours_after" value="2-5"> 2 – 5 hours</label>
+        <label><input type="radio" name="m_hours_after" value="5-10"> 5 – 10 hours</label>
+        <label><input type="radio" name="m_hours_after" value=">10"> More than 10 hours</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">7. Overall, how much has Cross Skilling Copilot improved your efficiency in mentoring? <span class="req">*</span></p>
+      <div class="rating-scale">
+        <div class="rating-labels"><span>No improvement</span><span>Significant improvement</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="m_efficiency" value="1">1</label>
+          <label><input type="radio" name="m_efficiency" value="2">2</label>
+          <label><input type="radio" name="m_efficiency" value="3">3</label>
+          <label><input type="radio" name="m_efficiency" value="4">4</label>
+          <label><input type="radio" name="m_efficiency" value="5">5</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">8. Which mentoring tasks has Cross Skilling Copilot helped reduce the most? <span class="req">*</span></p>
+      <p class="question-desc">Select all that apply.</p>
+      <div class="option-group">
+        <label><input type="checkbox" name="m_tasks" value="answering_questions"> Answering repetitive questions from mentees</label>
+        <label><input type="checkbox" name="m_tasks" value="creating_plans"> Creating / customizing learning plans</label>
+        <label><input type="checkbox" name="m_tasks" value="progress_tracking"> Tracking mentee progress & readiness</label>
+        <label><input type="checkbox" name="m_tasks" value="knowledge_checks"> Conducting knowledge checks / assessments</label>
+        <label><input type="checkbox" name="m_tasks" value="case_review"> Reviewing mentee case work</label>
+        <label><input type="checkbox" name="m_tasks" value="other_mentor_task"> Other</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">9. Estimated percentage of mentoring time saved after adopting Cross Skilling Copilot: <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="m_time_saved" value="0-10"> 0% – 10%</label>
+        <label><input type="radio" name="m_time_saved" value="10-25"> 10% – 25%</label>
+        <label><input type="radio" name="m_time_saved" value="25-50"> 25% – 50%</label>
+        <label><input type="radio" name="m_time_saved" value=">50"> More than 50%</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Section B — Tool Evaluation</p>
+      <p class="subtitle">Please rate your agreement with the following statements.</p>
+    </div>
+
+    <div class="card" style="overflow-x:auto;">
+      <p class="question-title">10. Please rate your agreement with each statement below: <span class="req">*</span></p>
+      <table class="likert-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Strongly<br>Disagree</th>
+            <th>Disagree</th>
+            <th>Neutral</th>
+            <th>Agree</th>
+            <th>Strongly<br>Agree</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cross Skilling Copilot reduces my mentoring burden.</td>
+            <td><input type="radio" name="m_likert1" value="1"></td>
+            <td><input type="radio" name="m_likert1" value="2"></td>
+            <td><input type="radio" name="m_likert1" value="3"></td>
+            <td><input type="radio" name="m_likert1" value="4"></td>
+            <td><input type="radio" name="m_likert1" value="5"></td>
+          </tr>
+          <tr>
+            <td>Mentees are better prepared when they come to me for help.</td>
+            <td><input type="radio" name="m_likert2" value="1"></td>
+            <td><input type="radio" name="m_likert2" value="2"></td>
+            <td><input type="radio" name="m_likert2" value="3"></td>
+            <td><input type="radio" name="m_likert2" value="4"></td>
+            <td><input type="radio" name="m_likert2" value="5"></td>
+          </tr>
+          <tr>
+            <td>The tool provides reliable and accurate guidance to mentees.</td>
+            <td><input type="radio" name="m_likert3" value="1"></td>
+            <td><input type="radio" name="m_likert3" value="2"></td>
+            <td><input type="radio" name="m_likert3" value="3"></td>
+            <td><input type="radio" name="m_likert3" value="4"></td>
+            <td><input type="radio" name="m_likert3" value="5"></td>
+          </tr>
+          <tr>
+            <td>I feel confident letting mentees use the tool independently.</td>
+            <td><input type="radio" name="m_likert4" value="1"></td>
+            <td><input type="radio" name="m_likert4" value="2"></td>
+            <td><input type="radio" name="m_likert4" value="3"></td>
+            <td><input type="radio" name="m_likert4" value="4"></td>
+            <td><input type="radio" name="m_likert4" value="5"></td>
+          </tr>
+          <tr>
+            <td>I would recommend this tool to other mentors.</td>
+            <td><input type="radio" name="m_likert5" value="1"></td>
+            <td><input type="radio" name="m_likert5" value="2"></td>
+            <td><input type="radio" name="m_likert5" value="3"></td>
+            <td><input type="radio" name="m_likert5" value="4"></td>
+            <td><input type="radio" name="m_likert5" value="5"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <p class="question-title">11. How would you rate the overall quality of Cross Skilling Copilot? <span class="req">*</span></p>
+      <div class="rating-scale">
+        <div class="rating-labels"><span>Very Poor</span><span>Excellent</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="m_overall" value="1">1</label>
+          <label><input type="radio" name="m_overall" value="2">2</label>
+          <label><input type="radio" name="m_overall" value="3">3</label>
+          <label><input type="radio" name="m_overall" value="4">4</label>
+          <label><input type="radio" name="m_overall" value="5">5</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Section C — Open Feedback</p>
+    </div>
+
+    <div class="card">
+      <p class="question-title">12. What do you like most about Cross Skilling Copilot as a mentor?</p>
+      <textarea class="textarea-input" name="m_likes" placeholder="Your answer"></textarea>
+    </div>
+
+    <div class="card">
+      <p class="question-title">13. What are the biggest challenges or limitations you've encountered?</p>
+      <textarea class="textarea-input" name="m_challenges" placeholder="Your answer"></textarea>
+    </div>
+
+    <div class="card">
+      <p class="question-title">14. What features or improvements would you suggest?</p>
+      <textarea class="textarea-input" name="m_suggestions" placeholder="Your answer"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack()">&larr; Back</button>
+      <button class="btn-primary" onclick="submitForm()"><span class="spinner"></span>Submit</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- ══════════ PAGE 2 – MENTEE BRANCH ══════════ -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div id="pageMentee" class="page branch">
+
+    <div class="card">
+      <p class="section-label">Section A — Overall Learning Impact</p>
+      <p class="subtitle">How has Cross Skilling Copilot impacted your learning journey?</p>
+    </div>
+
+    <div class="card">
+      <p class="question-title">5. How would you rate the overall helpfulness of Cross Skilling Copilot for your new product learning? <span class="req">*</span></p>
+      <div class="rating-scale">
+        <div class="rating-labels"><span>Not helpful at all</span><span>Extremely helpful</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="t_overall_help" value="1">1</label>
+          <label><input type="radio" name="t_overall_help" value="2">2</label>
+          <label><input type="radio" name="t_overall_help" value="3">3</label>
+          <label><input type="radio" name="t_overall_help" value="4">4</label>
+          <label><input type="radio" name="t_overall_help" value="5">5</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">6. Has Cross Skilling Copilot lowered the learning barrier for the new product? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="t_barrier" value="significantly"> Yes, significantly</label>
+        <label><input type="radio" name="t_barrier" value="somewhat"> Yes, somewhat</label>
+        <label><input type="radio" name="t_barrier" value="slightly"> Only slightly</label>
+        <label><input type="radio" name="t_barrier" value="no"> No, not at all</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">7. Compared to traditional self-study (documentation, shadowing, etc.), how much time has Cross Skilling Copilot saved you during ramp-up? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="t_time_saved" value="0-10"> 0% – 10% (Minimal savings)</label>
+        <label><input type="radio" name="t_time_saved" value="10-25"> 10% – 25%</label>
+        <label><input type="radio" name="t_time_saved" value="25-50"> 25% – 50%</label>
+        <label><input type="radio" name="t_time_saved" value=">50"> More than 50% (Major savings)</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Section B — Agent-Specific Evaluation</p>
+      <p class="subtitle">Cross Skilling Copilot includes three agents. Please evaluate each one.</p>
+    </div>
+
+    <!-- ── Readiness Plan Agent ── -->
+    <div class="card agent-card agent-rpa">
+      <p class="agent-name" style="color:#742774;">Readiness Plan Agent <span class="agent-badge">Agent 1</span></p>
+      <p class="question-desc" style="margin-bottom:20px;">This agent helps create and customize your personal learning / readiness plan.</p>
+
+      <p class="question-title">8. How would you rate the Readiness Plan Agent? <span class="req">*</span></p>
+      <div class="rating-scale" style="margin-bottom:24px;">
+        <div class="rating-labels"><span>Very Poor</span><span>Excellent</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="t_rpa_rating" value="1">1</label>
+          <label><input type="radio" name="t_rpa_rating" value="2">2</label>
+          <label><input type="radio" name="t_rpa_rating" value="3">3</label>
+          <label><input type="radio" name="t_rpa_rating" value="4">4</label>
+          <label><input type="radio" name="t_rpa_rating" value="5">5</label>
+        </div>
+      </div>
+
+      <p class="question-title">9. Which part(s) of your ramp-up did the Readiness Plan Agent positively impact? <span class="req">*</span></p>
+      <p class="question-desc">Select all that apply.</p>
+      <div class="option-group" style="margin-bottom:20px;">
+        <label><input type="checkbox" name="t_rpa_impact" value="structured_path"> Providing a structured learning path</label>
+        <label><input type="checkbox" name="t_rpa_impact" value="prioritization"> Helping prioritize what to learn first</label>
+        <label><input type="checkbox" name="t_rpa_impact" value="resource_curation"> Curating relevant resources & documentation</label>
+        <label><input type="checkbox" name="t_rpa_impact" value="goal_clarity"> Clarifying learning goals & milestones</label>
+        <label><input type="checkbox" name="t_rpa_impact" value="reducing_overwhelm"> Reducing feeling of overwhelm</label>
+        <label><input type="checkbox" name="t_rpa_impact" value="other_rpa"> Other</label>
+      </div>
+
+      <p class="question-title">10. Any specific feedback on the Readiness Plan Agent?</p>
+      <textarea class="textarea-input" name="t_rpa_feedback" placeholder="What worked well? What could improve?"></textarea>
+    </div>
+
+    <!-- ── Checkpoint Agent ── -->
+    <div class="card agent-card agent-ca">
+      <p class="agent-name" style="color:#a855a8;">Checkpoint Agent <span class="agent-badge">Agent 2</span></p>
+      <p class="question-desc" style="margin-bottom:20px;">This agent assesses your progress through knowledge checkpoints during ramp-up.</p>
+
+      <p class="question-title">11. How would you rate the Checkpoint Agent? <span class="req">*</span></p>
+      <div class="rating-scale" style="margin-bottom:24px;">
+        <div class="rating-labels"><span>Very Poor</span><span>Excellent</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="t_ca_rating" value="1">1</label>
+          <label><input type="radio" name="t_ca_rating" value="2">2</label>
+          <label><input type="radio" name="t_ca_rating" value="3">3</label>
+          <label><input type="radio" name="t_ca_rating" value="4">4</label>
+          <label><input type="radio" name="t_ca_rating" value="5">5</label>
+        </div>
+      </div>
+
+      <p class="question-title">12. Which part(s) of your ramp-up did the Checkpoint Agent positively impact? <span class="req">*</span></p>
+      <p class="question-desc">Select all that apply.</p>
+      <div class="option-group" style="margin-bottom:20px;">
+        <label><input type="checkbox" name="t_ca_impact" value="knowledge_gaps"> Identifying knowledge gaps</label>
+        <label><input type="checkbox" name="t_ca_impact" value="confidence"> Building confidence in what I've learned</label>
+        <label><input type="checkbox" name="t_ca_impact" value="progress_visibility"> Giving visibility into my progress</label>
+        <label><input type="checkbox" name="t_ca_impact" value="focus_areas"> Highlighting focus areas for further study</label>
+        <label><input type="checkbox" name="t_ca_impact" value="readiness_signal"> Signaling readiness to take real cases</label>
+        <label><input type="checkbox" name="t_ca_impact" value="other_ca"> Other</label>
+      </div>
+
+      <p class="question-title">13. Any specific feedback on the Checkpoint Agent?</p>
+      <textarea class="textarea-input" name="t_ca_feedback" placeholder="What worked well? What could improve?"></textarea>
+    </div>
+
+    <!-- ── QA Agent ── -->
+    <div class="card agent-card agent-qa">
+      <p class="agent-name" style="color:#9b4dca;">QA Agent <span class="agent-badge">Agent 3</span></p>
+      <p class="question-desc" style="margin-bottom:20px;">This agent answers your questions and provides on-demand support during learning and case work.</p>
+
+      <p class="question-title">14. How would you rate the QA Agent? <span class="req">*</span></p>
+      <div class="rating-scale" style="margin-bottom:24px;">
+        <div class="rating-labels"><span>Very Poor</span><span>Excellent</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="t_qa_rating" value="1">1</label>
+          <label><input type="radio" name="t_qa_rating" value="2">2</label>
+          <label><input type="radio" name="t_qa_rating" value="3">3</label>
+          <label><input type="radio" name="t_qa_rating" value="4">4</label>
+          <label><input type="radio" name="t_qa_rating" value="5">5</label>
+        </div>
+      </div>
+
+      <p class="question-title">15. Which part(s) of your ramp-up did the QA Agent positively impact? <span class="req">*</span></p>
+      <p class="question-desc">Select all that apply.</p>
+      <div class="option-group" style="margin-bottom:20px;">
+        <label><input type="checkbox" name="t_qa_impact" value="quick_answers"> Getting quick answers without waiting for a mentor</label>
+        <label><input type="checkbox" name="t_qa_impact" value="deep_understanding"> Deepening understanding of complex topics</label>
+        <label><input type="checkbox" name="t_qa_impact" value="troubleshooting"> Troubleshooting specific issues / scenarios</label>
+        <label><input type="checkbox" name="t_qa_impact" value="case_assistance"> Assisting with real case resolution</label>
+        <label><input type="checkbox" name="t_qa_impact" value="reducing_dependency"> Reducing dependency on mentors</label>
+        <label><input type="checkbox" name="t_qa_impact" value="other_qa"> Other</label>
+      </div>
+
+      <p class="question-title">16. Any specific feedback on the QA Agent?</p>
+      <textarea class="textarea-input" name="t_qa_feedback" placeholder="What worked well? What could improve?"></textarea>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Section C — Post Ramp-Up & Ongoing Usage</p>
+      <p class="subtitle">Your experience after completing initial ramp-up and starting case work.</p>
+    </div>
+
+    <div class="card">
+      <p class="question-title">17. After completing your initial ramp-up, do you continue to use Cross Skilling Copilot? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="t_continued_use" value="yes_regularly"> Yes, regularly</label>
+        <label><input type="radio" name="t_continued_use" value="yes_occasionally"> Yes, occasionally</label>
+        <label><input type="radio" name="t_continued_use" value="rarely"> Rarely</label>
+        <label><input type="radio" name="t_continued_use" value="no"> No</label>
+        <label><input type="radio" name="t_continued_use" value="not_yet"> I haven't started handling cases yet</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">18. Has Cross Skilling Copilot improved your efficiency in handling cases? <span class="req">*</span></p>
+      <div class="rating-scale">
+        <div class="rating-labels"><span>No improvement</span><span>Significant improvement</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="t_case_efficiency" value="1">1</label>
+          <label><input type="radio" name="t_case_efficiency" value="2">2</label>
+          <label><input type="radio" name="t_case_efficiency" value="3">3</label>
+          <label><input type="radio" name="t_case_efficiency" value="4">4</label>
+          <label><input type="radio" name="t_case_efficiency" value="5">5</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">19. In what ways has it helped with case handling?</p>
+      <p class="question-desc">Select all that apply.</p>
+      <div class="option-group">
+        <label><input type="checkbox" name="t_case_help" value="faster_resolution"> Faster case resolution time</label>
+        <label><input type="checkbox" name="t_case_help" value="better_accuracy"> Better accuracy in troubleshooting</label>
+        <label><input type="checkbox" name="t_case_help" value="less_escalation"> Fewer escalations to senior engineers / mentors</label>
+        <label><input type="checkbox" name="t_case_help" value="confidence_cases"> Increased confidence when handling cases</label>
+        <label><input type="checkbox" name="t_case_help" value="reference_tool"> Useful as a quick reference during case work</label>
+        <label><input type="checkbox" name="t_case_help" value="not_applicable"> Not applicable / Haven't used it for cases</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Section D — Overall Experience & Suggestions</p>
+    </div>
+
+    <div class="card">
+      <p class="question-title">20. Overall, how satisfied are you with Cross Skilling Copilot? <span class="req">*</span></p>
+      <div class="rating-scale">
+        <div class="rating-labels"><span>Very Dissatisfied</span><span>Very Satisfied</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="t_satisfaction" value="1">1</label>
+          <label><input type="radio" name="t_satisfaction" value="2">2</label>
+          <label><input type="radio" name="t_satisfaction" value="3">3</label>
+          <label><input type="radio" name="t_satisfaction" value="4">4</label>
+          <label><input type="radio" name="t_satisfaction" value="5">5</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">21. How likely are you to recommend Cross Skilling Copilot to a colleague starting a new product? <span class="req">*</span></p>
+      <div class="rating-scale">
+        <div class="rating-labels"><span>Not at all likely</span><span>Extremely likely</span></div>
+        <div class="rating-options">
+          <label><input type="radio" name="t_nps" value="1">1</label>
+          <label><input type="radio" name="t_nps" value="2">2</label>
+          <label><input type="radio" name="t_nps" value="3">3</label>
+          <label><input type="radio" name="t_nps" value="4">4</label>
+          <label><input type="radio" name="t_nps" value="5">5</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">22. What did you find most valuable about Cross Skilling Copilot?</p>
+      <textarea class="textarea-input" name="t_most_valuable" placeholder="Your answer"></textarea>
+    </div>
+
+    <div class="card">
+      <p class="question-title">23. What are the biggest challenges or limitations you experienced?</p>
+      <textarea class="textarea-input" name="t_challenges" placeholder="Your answer"></textarea>
+    </div>
+
+    <div class="card">
+      <p class="question-title">24. What features or improvements would you suggest for future versions?</p>
+      <textarea class="textarea-input" name="t_suggestions" placeholder="Your answer"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack()">&larr; Back</button>
+      <button class="btn-primary" onclick="submitForm()"><span class="spinner"></span>Submit</button>
+    </div>
+  </div>
+
+  <!-- ══════════ THANK YOU ══════════ -->
+  <div id="thankYou" class="thank-you card">
+    <div class="check-icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>Thank you for your feedback!</h2>
+    <p>Your response has been recorded. Your insights will help us continue improving Cross Skilling Copilot for everyone.</p>
+  </div>
+
+</div>
+
+<div class="footer">Cross Skilling Copilot — Impact Survey 2026</div>
+
+</div><!-- end main-survey -->
+
+<script>
+  // ── Cover Page ──
+  function startSurvey() {
+    const cover = document.getElementById('coverPage');
+    cover.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    cover.style.opacity = '0';
+    cover.style.transform = 'scale(1.02)';
+    setTimeout(() => {
+      cover.classList.add('hidden');
+      document.getElementById('mainSurvey').classList.add('visible');
+      window.scrollTo({ top: 0 });
+    }, 500);
+  }
+
+  let currentRole = null;
+
+  function handleRoleChange() {
+    const val = document.querySelector('input[name="role"]:checked');
+    currentRole = val ? val.value : null;
+    validatePage1();
+  }
+
+  function validatePage1() {
+    const name = document.getElementById('respondentName').value.trim();
+    const team = document.getElementById('respondentTeam').value.trim();
+    const role = document.querySelector('input[name="role"]:checked');
+    const product = document.getElementById('productName').value.trim();
+    const duration = document.querySelector('input[name="duration"]:checked');
+    document.getElementById('nextBtn1').disabled = !(name && team && role && product && duration);
+  }
+
+  document.getElementById('respondentName').addEventListener('input', validatePage1);
+  document.getElementById('respondentTeam').addEventListener('input', validatePage1);
+  document.getElementById('productName').addEventListener('input', validatePage1);
+  document.querySelectorAll('input[name="duration"]').forEach(r => r.addEventListener('change', validatePage1));
+
+  function goToPage2() {
+    document.getElementById('page1').style.display = 'none';
+    if (currentRole === 'mentor') {
+      document.getElementById('pageMentor').classList.add('active');
+      document.getElementById('pageMentor').style.display = 'block';
+    } else {
+      document.getElementById('pageMentee').classList.add('active');
+      document.getElementById('pageMentee').style.display = 'block';
+    }
+    updateProgress(50);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goBack() {
+    document.getElementById('pageMentor').classList.remove('active');
+    document.getElementById('pageMentor').style.display = 'none';
+    document.getElementById('pageMentee').classList.remove('active');
+    document.getElementById('pageMentee').style.display = 'none';
+    document.getElementById('page1').style.display = 'block';
+    updateProgress(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  ↓↓↓  PASTE YOUR GOOGLE APPS SCRIPT URL BELOW  ↓↓↓
+  // ══════════════════════════════════════════════════════════
+  const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyesIcgqNdwLeqzyuguhUbTeCReH3bRCYnINbtuWYxkJ_sK7kgNB4vLwjIb_SdFKVfEdw/exec';
+  // ══════════════════════════════════════════════════════════
+
+  function submitForm() {
+    const formData = new FormData();
+    document.querySelectorAll('input:checked, input[type="text"], textarea').forEach(el => {
+      if (el.type === 'checkbox') {
+        formData.append(el.name, el.value);
+      } else if (el.value.trim()) {
+        formData.set(el.name || el.id, el.value);
+      }
+    });
+
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      if (data[key]) {
+        data[key] = Array.isArray(data[key]) ? [...data[key], value] : [data[key], value];
+      } else {
+        data[key] = value;
+      }
+    }
+
+    // Show loading state
+    document.querySelectorAll('.btn-primary').forEach(btn => {
+      btn.disabled = true;
+      btn.classList.add('loading');
+    });
+
+    if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      fetch(GOOGLE_SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(() => setTimeout(showThankYou, 600))
+      .catch(err => {
+        console.error('Submit error:', err);
+        setTimeout(showThankYou, 600);
+      });
+    } else {
+      console.warn('Google Sheet URL not configured. Response logged to console only:');
+      console.log(JSON.stringify(data, null, 2));
+      setTimeout(showThankYou, 600);
+    }
+  }
+
+  function showThankYou() {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    document.getElementById('thankYou').style.display = 'block';
+    document.getElementById('thankYou').classList.add('active');
+    updateProgress(100);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress(pct) {
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = pct + '%';
+  }
+
+  // Init
+  document.querySelectorAll('.page').forEach(p => { if (!p.classList.contains('active')) p.style.display = 'none'; });
+</script>
+
+</body>
+</html>
