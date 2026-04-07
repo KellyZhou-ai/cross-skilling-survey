@@ -985,7 +985,7 @@
       </div>
       <div class="cover-feature">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Mentors & Mentees
+        Mentors, Mentees & More
       </div>
     </div>
 
@@ -1039,15 +1039,15 @@
   <!-- ══════════ PAGE 1: ROLE SELECTION ══════════ -->
   <div id="page1" class="page active">
     <div class="card">
-      <p class="question-title">1. Your Name & Team <span class="req">*</span></p>
+      <p class="question-title">1. Your Region & PCY <span class="req">*</span></p>
       <div style="display:flex; gap:16px; flex-wrap:wrap;">
         <div style="flex:1; min-width:200px;">
-          <label style="font-size:12px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:6px;">Name</label>
-          <input type="text" class="text-input" id="respondentName" placeholder="Enter your name">
+          <label style="font-size:12px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:6px;">Region</label>
+          <input type="text" class="text-input" id="respondentRegion" placeholder="Enter your region">
         </div>
         <div style="flex:1; min-width:200px;">
-          <label style="font-size:12px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:6px;">Team</label>
-          <input type="text" class="text-input" id="respondentTeam" placeholder="Enter your team name">
+          <label style="font-size:12px; color:var(--text-muted); font-weight:500; display:block; margin-bottom:6px;">PCY</label>
+          <input type="text" class="text-input" id="respondentPCY" placeholder="Enter your PCY">
         </div>
       </div>
     </div>
@@ -1057,6 +1057,15 @@
       <div class="option-group">
         <label><input type="radio" name="role" value="mentor" onchange="handleRoleChange()"> Mentor</label>
         <label><input type="radio" name="role" value="mentee" onchange="handleRoleChange()"> Mentee (New product learner)</label>
+        <label><input type="radio" name="role" value="others" onchange="handleRoleChange()"> Others (Not in Cross Skilling program but using the tool)</label>
+      </div>
+    </div>
+
+    <div class="card" id="menteeStageCard" style="display:none;">
+      <p class="question-title">Which stage are you currently in? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="menteeStage" value="readiness" onchange="validatePage1()"> Still in Readiness stage (ramping up)</label>
+        <label><input type="radio" name="menteeStage" value="post_readiness" onchange="validatePage1()"> Post Readiness stage (already handling cases)</label>
       </div>
     </div>
 
@@ -1230,18 +1239,8 @@
     </div>
 
     <div class="card">
-      <p class="question-title">12. What do you like most about Cross Skilling Copilot as a mentor?</p>
-      <textarea class="textarea-input" name="m_likes" placeholder="Your answer"></textarea>
-    </div>
-
-    <div class="card">
-      <p class="question-title">13. What are the biggest challenges or limitations you've encountered?</p>
-      <textarea class="textarea-input" name="m_challenges" placeholder="Your answer"></textarea>
-    </div>
-
-    <div class="card">
-      <p class="question-title">14. What features or improvements would you suggest?</p>
-      <textarea class="textarea-input" name="m_suggestions" placeholder="Your answer"></textarea>
+      <p class="question-title">12. Any other feedback or suggestions for Cross Skilling Copilot?</p>
+      <textarea class="textarea-input" name="m_feedback" placeholder="Your answer (optional)"></textarea>
     </div>
 
     <div class="btn-row">
@@ -1395,6 +1394,7 @@
       <textarea class="textarea-input" name="t_qa_feedback" placeholder="What worked well? What could improve?"></textarea>
     </div>
 
+    <div id="menteeSectionC">
     <div class="card">
       <p class="section-label">Section C — Post Ramp-Up & Ongoing Usage</p>
       <p class="subtitle">Your experience after completing initial ramp-up and starting case work.</p>
@@ -1437,9 +1437,10 @@
         <label><input type="checkbox" name="t_case_help" value="not_applicable"> Not applicable / Haven't used it for cases</label>
       </div>
     </div>
+    </div>
 
     <div class="card">
-      <p class="section-label">Section D — Overall Experience & Suggestions</p>
+      <p class="section-label">Section D — Overall Experience</p>
     </div>
 
     <div class="card">
@@ -1471,18 +1472,44 @@
     </div>
 
     <div class="card">
-      <p class="question-title">22. What did you find most valuable about Cross Skilling Copilot?</p>
-      <textarea class="textarea-input" name="t_most_valuable" placeholder="Your answer"></textarea>
+      <p class="question-title">22. Any other feedback or suggestions for Cross Skilling Copilot?</p>
+      <textarea class="textarea-input" name="t_feedback" placeholder="Your answer (optional)"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack()">&larr; Back</button>
+      <button class="btn-primary" onclick="submitForm()"><span class="spinner"></span>Submit</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- ══════════ PAGE 2 – OTHERS BRANCH ══════════ -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div id="pageOthers" class="page branch">
+
+    <div class="card">
+      <p class="section-label">Cross Skilling Copilot — Your Experience</p>
+      <p class="subtitle">Thank you for trying Cross Skilling Copilot! Please share a bit about how you've been using it.</p>
     </div>
 
     <div class="card">
-      <p class="question-title">23. What are the biggest challenges or limitations you experienced?</p>
-      <textarea class="textarea-input" name="t_challenges" placeholder="Your answer"></textarea>
+      <p class="question-title">5. What is your primary use case for Cross Skilling Copilot? <span class="req">*</span></p>
+      <textarea class="textarea-input" name="o_use_case" placeholder="Briefly describe how you use the tool"></textarea>
     </div>
 
     <div class="card">
-      <p class="question-title">24. What features or improvements would you suggest for future versions?</p>
-      <textarea class="textarea-input" name="t_suggestions" placeholder="Your answer"></textarea>
+      <p class="question-title">6. How often do you use Cross Skilling Copilot? <span class="req">*</span></p>
+      <div class="option-group">
+        <label><input type="radio" name="o_frequency" value="daily"> Daily</label>
+        <label><input type="radio" name="o_frequency" value="few_times_week"> A few times a week</label>
+        <label><input type="radio" name="o_frequency" value="weekly"> About once a week</label>
+        <label><input type="radio" name="o_frequency" value="rarely"> Rarely / just tried it</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="question-title">7. Any feedback or suggestions for Cross Skilling Copilot?</p>
+      <textarea class="textarea-input" name="o_feedback" placeholder="Your answer (optional)"></textarea>
     </div>
 
     <div class="btn-row">
@@ -1521,24 +1548,45 @@
   }
 
   let currentRole = null;
+  let currentMenteeStage = null;
 
   function handleRoleChange() {
     const val = document.querySelector('input[name="role"]:checked');
     currentRole = val ? val.value : null;
+
+    // Show mentee stage card only for mentee
+    const stageCard = document.getElementById('menteeStageCard');
+    if (currentRole === 'mentee') {
+      stageCard.style.display = 'block';
+    } else {
+      stageCard.style.display = 'none';
+      // Reset mentee stage
+      document.querySelectorAll('input[name="menteeStage"]').forEach(r => r.checked = false);
+      currentMenteeStage = null;
+    }
     validatePage1();
   }
 
   function validatePage1() {
-    const name = document.getElementById('respondentName').value.trim();
-    const team = document.getElementById('respondentTeam').value.trim();
+    const region = document.getElementById('respondentRegion').value.trim();
+    const pcy = document.getElementById('respondentPCY').value.trim();
     const role = document.querySelector('input[name="role"]:checked');
     const product = document.getElementById('productName').value.trim();
     const duration = document.querySelector('input[name="duration"]:checked');
-    document.getElementById('nextBtn1').disabled = !(name && team && role && product && duration);
+
+    // For mentee, also require stage selection
+    let menteeStageOk = true;
+    if (currentRole === 'mentee') {
+      const stage = document.querySelector('input[name="menteeStage"]:checked');
+      currentMenteeStage = stage ? stage.value : null;
+      menteeStageOk = !!stage;
+    }
+
+    document.getElementById('nextBtn1').disabled = !(region && pcy && role && product && duration && menteeStageOk);
   }
 
-  document.getElementById('respondentName').addEventListener('input', validatePage1);
-  document.getElementById('respondentTeam').addEventListener('input', validatePage1);
+  document.getElementById('respondentRegion').addEventListener('input', validatePage1);
+  document.getElementById('respondentPCY').addEventListener('input', validatePage1);
   document.getElementById('productName').addEventListener('input', validatePage1);
   document.querySelectorAll('input[name="duration"]').forEach(r => r.addEventListener('change', validatePage1));
 
@@ -1547,9 +1595,19 @@
     if (currentRole === 'mentor') {
       document.getElementById('pageMentor').classList.add('active');
       document.getElementById('pageMentor').style.display = 'block';
-    } else {
+    } else if (currentRole === 'mentee') {
       document.getElementById('pageMentee').classList.add('active');
       document.getElementById('pageMentee').style.display = 'block';
+      // Show/hide Section C based on mentee stage
+      const sectionC = document.getElementById('menteeSectionC');
+      if (currentMenteeStage === 'post_readiness') {
+        sectionC.style.display = 'none';
+      } else {
+        sectionC.style.display = 'block';
+      }
+    } else if (currentRole === 'others') {
+      document.getElementById('pageOthers').classList.add('active');
+      document.getElementById('pageOthers').style.display = 'block';
     }
     updateProgress(50);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1560,6 +1618,8 @@
     document.getElementById('pageMentor').style.display = 'none';
     document.getElementById('pageMentee').classList.remove('active');
     document.getElementById('pageMentee').style.display = 'none';
+    document.getElementById('pageOthers').classList.remove('active');
+    document.getElementById('pageOthers').style.display = 'none';
     document.getElementById('page1').style.display = 'block';
     updateProgress(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
