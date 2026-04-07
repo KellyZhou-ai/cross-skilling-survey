@@ -1070,11 +1070,11 @@
     </div>
 
     <div class="card">
-      <p class="question-title">3. Which product / technology is involved in your cross-skilling engagement? <span class="req">*</span></p>
+      <p class="question-title">3. Which product / technology is involved in your Cross Skilling Copilot engagement? <span class="req">*</span></p>
       <input type="text" class="text-input" id="productName" placeholder="Enter the product or technology name">
     </div>
 
-    <div class="card">
+    <div class="card" id="durationCard">
       <p class="question-title">4. How long have you been using Cross Skilling Copilot? <span class="req">*</span></p>
       <div class="option-group">
         <label><input type="radio" name="duration" value="<1week"> Less than 1 week</label>
@@ -1101,7 +1101,7 @@
     </div>
 
     <div class="card">
-      <p class="question-title">5. Before using Cross Skilling Copilot, approximately how many hours per week did you spend mentoring / guiding mentees? <span class="req">*</span></p>
+      <p class="question-title">5. Without Cross Skilling Copilot, approximately how many hours per week did you spend mentoring / guiding mentees? <span class="req">*</span></p>
       <div class="option-group">
         <label><input type="radio" name="m_hours_before" value="<2"> Less than 2 hours</label>
         <label><input type="radio" name="m_hours_before" value="2-5"> 2 – 5 hours</label>
@@ -1111,7 +1111,7 @@
     </div>
 
     <div class="card">
-      <p class="question-title">6. After using Cross Skilling Copilot, approximately how many hours per week do you now spend mentoring / guiding mentees? <span class="req">*</span></p>
+      <p class="question-title">6. With Cross Skilling Copilot, approximately how many hours per week do you now spend mentoring / guiding mentees? <span class="req">*</span></p>
       <div class="option-group">
         <label><input type="radio" name="m_hours_after" value="<2"> Less than 2 hours</label>
         <label><input type="radio" name="m_hours_after" value="2-5"> 2 – 5 hours</label>
@@ -1141,8 +1141,7 @@
         <label><input type="checkbox" name="m_tasks" value="answering_questions"> Answering repetitive questions from mentees</label>
         <label><input type="checkbox" name="m_tasks" value="creating_plans"> Creating / customizing learning plans</label>
         <label><input type="checkbox" name="m_tasks" value="progress_tracking"> Tracking mentee progress & readiness</label>
-        <label><input type="checkbox" name="m_tasks" value="knowledge_checks"> Conducting knowledge checks / assessments</label>
-        <label><input type="checkbox" name="m_tasks" value="case_review"> Reviewing mentee case work</label>
+        <label><input type="checkbox" name="m_tasks" value="conducting_checkpoint"> Conducting Checkpoint</label>
         <label><input type="checkbox" name="m_tasks" value="other_mentor_task"> Other</label>
       </div>
     </div>
@@ -1274,12 +1273,10 @@
     </div>
 
     <div class="card">
-      <p class="question-title">6. Has Cross Skilling Copilot lowered the learning barrier for the new product? <span class="req">*</span></p>
+      <p class="question-title">6. Has Cross Skilling Copilot made your learning experience smoother? <span class="req">*</span></p>
       <div class="option-group">
-        <label><input type="radio" name="t_barrier" value="significantly"> Yes, significantly</label>
-        <label><input type="radio" name="t_barrier" value="somewhat"> Yes, somewhat</label>
-        <label><input type="radio" name="t_barrier" value="slightly"> Only slightly</label>
-        <label><input type="radio" name="t_barrier" value="no"> No, not at all</label>
+        <label><input type="radio" name="t_barrier" value="yes"> Yes</label>
+        <label><input type="radio" name="t_barrier" value="no"> No</label>
       </div>
     </div>
 
@@ -1444,21 +1441,7 @@
     </div>
 
     <div class="card">
-      <p class="question-title">20. Overall, how satisfied are you with Cross Skilling Copilot? <span class="req">*</span></p>
-      <div class="rating-scale">
-        <div class="rating-labels"><span>Very Dissatisfied</span><span>Very Satisfied</span></div>
-        <div class="rating-options">
-          <label><input type="radio" name="t_satisfaction" value="1">1</label>
-          <label><input type="radio" name="t_satisfaction" value="2">2</label>
-          <label><input type="radio" name="t_satisfaction" value="3">3</label>
-          <label><input type="radio" name="t_satisfaction" value="4">4</label>
-          <label><input type="radio" name="t_satisfaction" value="5">5</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <p class="question-title">21. How likely are you to recommend Cross Skilling Copilot to a colleague starting a new product? <span class="req">*</span></p>
+      <p class="question-title">20. How likely are you to recommend Cross Skilling Copilot to a colleague starting a new product? <span class="req">*</span></p>
       <div class="rating-scale">
         <div class="rating-labels"><span>Not at all likely</span><span>Extremely likely</span></div>
         <div class="rating-options">
@@ -1564,6 +1547,17 @@
       document.querySelectorAll('input[name="menteeStage"]').forEach(r => r.checked = false);
       currentMenteeStage = null;
     }
+
+    // Hide Q4 (duration) for Mentor, show for Mentee & Others
+    const durationCard = document.getElementById('durationCard');
+    if (currentRole === 'mentor') {
+      durationCard.style.display = 'none';
+      // Reset duration selection so it doesn't block validation
+      document.querySelectorAll('input[name="duration"]').forEach(r => r.checked = false);
+    } else {
+      durationCard.style.display = 'block';
+    }
+
     validatePage1();
   }
 
@@ -1582,7 +1576,13 @@
       menteeStageOk = !!stage;
     }
 
-    document.getElementById('nextBtn1').disabled = !(region && pcy && role && product && duration && menteeStageOk);
+    // Mentor doesn't need duration; Mentee & Others do
+    let durationOk = true;
+    if (currentRole !== 'mentor') {
+      durationOk = !!duration;
+    }
+
+    document.getElementById('nextBtn1').disabled = !(region && pcy && role && product && durationOk && menteeStageOk);
   }
 
   document.getElementById('respondentRegion').addEventListener('input', validatePage1);
@@ -1599,8 +1599,10 @@
       document.getElementById('pageMentee').classList.add('active');
       document.getElementById('pageMentee').style.display = 'block';
       // Show/hide Section C based on mentee stage
+      // Readiness stage = still ramping up, no case work yet → hide Section C
+      // Post Readiness = already handling cases → show Section C
       const sectionC = document.getElementById('menteeSectionC');
-      if (currentMenteeStage === 'post_readiness') {
+      if (currentMenteeStage === 'readiness') {
         sectionC.style.display = 'none';
       } else {
         sectionC.style.display = 'block';
